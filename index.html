@@ -154,8 +154,7 @@
 <body>
   <div class="wrap">
     <header>
-      <!-- Replace the src with your actual logo URL -->
-      <img src="https://i.imgur.com/WQu9OIG.png" alt="Masomo SMS App Logo" class="logo" />
+      <img src="your-logo-url-here" alt="Masomo SMS App Logo" class="logo" />
       <div class="title">
         <h1>Masomo SMS – Earnings Calculator</h1>
         <p>Live projection for <strong>Marketers</strong> and <strong>Investor</strong>. Updates as you type.</p>
@@ -163,7 +162,6 @@
     </header>
 
     <div class="grid">
-      <!-- INPUTS -->
       <section class="card">
         <h2>Inputs</h2>
         <div class="inputs">
@@ -187,7 +185,6 @@
         </div>
       </section>
 
-      <!-- RESULTS -->
       <section class="card">
         <h2>Results</h2>
         <div class="results">
@@ -249,53 +246,56 @@
       return "Ksh." + parts.join(".");
     }
 
-    // Core calculation
     function recalc(){
       const marketers        = Math.max(0, parseFloat(document.getElementById("marketers").value) || 0);
       const usersPerMarketer = Math.max(0, parseFloat(document.getElementById("usersPerMarketer").value) || 0);
       const dailySpend       = Math.max(0, parseFloat(document.getElementById("dailySpend").value) || 0);
 
-      const totalUsersPerDay = marketers * usersPerMarketer;
-      const dailyRevenue     = totalUsersPerDay * dailySpend;
+      const newUsersPerDay = marketers * usersPerMarketer;
+      let totalUsersDaily = 0;
+      let monthlyProfit = 0;
 
-      // Profit margin 50% (sell 0.80 vs buy 0.40)
-      const dailyProfit      = dailyRevenue * 0.50;
+      // Simulate 30 days compounding
+      for(let day=1; day<=30; day++){
+        totalUsersDaily += newUsersPerDay; // add new users each day
+        const dailyRevenue = totalUsersDaily * dailySpend;
+        const dailyProfit  = dailyRevenue * 0.50;
+
+        monthlyProfit += dailyProfit; // accumulate for monthly
+        if(day === 30) var todayProfit = dailyProfit; // today's total for display
+      }
 
       // Marketers: 20% of gross profit
-      const marketersDailyTotal = dailyProfit * 0.20;
+      const marketersDailyTotal = todayProfit * 0.20;
+      const marketersPerDay     = marketers > 0 ? (marketersDailyTotal / marketers) : 0;
+      const marketersMonthlyTotal = monthlyProfit * 0.20;
 
-      // Per marketer share (assuming equal distribution)
-      const marketersPerDay = marketers > 0 ? (marketersDailyTotal / marketers) : 0;
+      // Investor: 20% of remaining profit
+      const investorDaily   = (todayProfit - marketersDailyTotal) * 0.20;
+      const investorMonthly = (monthlyProfit * 0.50 - monthlyProfit * 0.20) * 0.20; // same logic scaled
 
-      // Investor: 20% of remaining profit after marketers are paid
-      const investorDaily = (dailyProfit - marketersDailyTotal) * 0.20;
-
-      // Scale
-      const mkPerMonth  = marketersPerDay * 30;
-      const mkAllMonth  = marketersDailyTotal * 30;
-      const mkAllYear   = marketersDailyTotal * 365;
-      const invMonth    = investorDaily * 30;
-      const invYear     = investorDaily * 365;
+      // Yearly approximation: scale by 365/30
+      const scale = 365/30;
+      const mkAllYear = marketersMonthlyTotal * scale;
+      const invYear   = investorMonthly * scale;
 
       // Render
       document.getElementById("mkPerDay").textContent   = fmtKsh(marketersPerDay);
-      document.getElementById("mkPerMonth").textContent = fmtKsh(mkPerMonth);
+      document.getElementById("mkPerMonth").textContent = fmtKsh(marketersMonthlyTotal / marketers); // per marketer
       document.getElementById("mkAllDay").textContent   = fmtKsh(marketersDailyTotal);
-      document.getElementById("mkAllMonth").textContent = fmtKsh(mkAllMonth);
+      document.getElementById("mkAllMonth").textContent = fmtKsh(marketersMonthlyTotal);
       document.getElementById("mkAllYear").textContent  = fmtKsh(mkAllYear);
 
       document.getElementById("invDay").textContent     = fmtKsh(investorDaily);
-      document.getElementById("invMonth").textContent   = fmtKsh(invMonth);
+      document.getElementById("invMonth").textContent   = fmtKsh(investorMonthly);
       document.getElementById("invYear").textContent    = fmtKsh(invYear);
     }
 
-    // Live updates on input
     ["marketers", "usersPerMarketer", "dailySpend"].forEach(id=>{
       document.getElementById(id).addEventListener("input", recalc);
       document.getElementById(id).addEventListener("change", recalc);
     });
 
-    // Initial calc
     recalc();
   </script>
 </body>
