@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Masomo SMS – Earnings Calculator</title>
+  <meta name="description" content="Interactive calculator for marketer and investor earnings for Masomo SMS App." />
+  <style>
+    :root{
+      --bg:#0f172a;          /* deep slate */
+      --panel:#111827;       /* near-black */
+      --muted:#94a3b8;       /* slate-300 */
+      --accent:#e5e7eb;      /* text base */
+      --red:#ef4444;         /* nice red for totals */
+      --ring:rgba(255,255,255,0.15);
+      --card:#0b1220;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 20% -10%, #172554 0%, transparent 60%),
+                  radial-gradient(1200px 600px at 100% 10%, #1f2937 0%, transparent 60%),
+                  var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--accent);
+      line-height:1.4;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:32px 16px 64px;
+    }
+    .wrap{
+      width:100%;
+      max-width:1000px;
+      backdrop-filter: blur(6px);
+    }
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:24px;
+    }
+    .logo{
+      width:72px;height:72px;object-fit:contain;border-radius:12px;
+      background:#0b1220; box-shadow:0 0 0 1px var(--ring) inset;
+    }
+    .title h1{margin:0;font-size: clamp(1.25rem, 1.5vw + 1rem, 2rem);}
+    .title p{margin:4px 0 0;color:var(--muted);font-size:0.95rem}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr 1.4fr;
+      gap:18px;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr}
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.01));
+      border:1px solid var(--ring);
+      border-radius:16px;
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:1.05rem;
+      letter-spacing:0.2px;
+      color:#e2e8f0;
+    }
+    .inputs{
+      display:grid;
+      gap:12px;
+    }
+    .field{
+      display:grid;
+      gap:6px;
+    }
+    label{
+      color:var(--muted);
+      font-size:0.92rem;
+    }
+    input[type="number"]{
+      width:100%;
+      padding:12px 14px;
+      font-size:1rem;
+      color:#e5e7eb;
+      background: var(--panel);
+      border:1px solid var(--ring);
+      border-radius:12px;
+      outline:none;
+      transition: box-shadow 120ms ease, border-color 120ms ease;
+    }
+    input[type="number"]:focus{
+      border-color:#38bdf8;
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+    }
+    .hint{
+      margin-top:6px;
+      color:#9ca3af;
+      font-size:0.85rem;
+    }
+    .results{
+      display:grid;
+      gap:14px;
+    }
+    .group{
+      border:1px dashed var(--ring);
+      border-radius:14px;
+      padding:12px;
+      background: var(--card);
+    }
+    .group h3{
+      margin:0 0 8px;
+      font-size:0.98rem;
+      color:#cbd5e1;
+      letter-spacing:0.2px;
+    }
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:8px 6px;
+      border-radius:10px;
+    }
+    .row + .row{border-top:1px solid rgba(255,255,255,0.04)}
+    .label{color:#a5b4fc;font-size:0.95rem}
+    .value{
+      font-weight:800;
+      color: var(--red);
+      font-size:1.02rem;
+    }
+    .fine{
+      color:var(--muted);
+      font-size:0.85rem;
+      margin-top:12px;
+    }
+    .footer-note{
+      margin-top:16px;
+      color:#93c5fd;
+      font-size:0.88rem;
+    }
+    .pill{
+      display:inline-block;
+      border:1px solid var(--ring);
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:0.8rem;
+      color:#cbd5e1;
+      margin-left:6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <!-- Replace the src with your actual logo URL -->
+      <img src="https://i.imgur.com/WQu9OIG.png" alt="Masomo SMS App Logo" class="logo" />
+      <div class="title">
+        <h1>Masomo SMS – Earnings Calculator</h1>
+        <p>Live projection for <strong>Marketers</strong> and <strong>Investor</strong>. Updates as you type.</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- INPUTS -->
+      <section class="card">
+        <h2>Inputs</h2>
+        <div class="inputs">
+          <div class="field">
+            <label for="marketers">Number of marketers</label>
+            <input id="marketers" type="number" min="0" step="1" value="100" />
+          </div>
+          <div class="field">
+            <label for="usersPerMarketer">New users signed up per marketer, per day</label>
+            <input id="usersPerMarketer" type="number" min="0" step="1" value="20" />
+          </div>
+          <div class="field">
+            <label for="dailySpend">
+              Daily SMS credits per user (Ksh.)
+              <span class="pill">Profit margin assumed 50%</span>
+            </label>
+            <input id="dailySpend" type="number" min="0" step="1" value="20" />
+            <div class="hint">We buy at Ksh.0.40 and sell at Ksh.0.80 → profit Ksh.0.40 per Ksh.0.80 (50% margin).</div>
+          </div>
+          <div class="fine">All calculations use Month = 30 days, Year = 365 days.</div>
+        </div>
+      </section>
+
+      <!-- RESULTS -->
+      <section class="card">
+        <h2>Results</h2>
+        <div class="results">
+
+          <div class="group">
+            <h3>Marketers’ Earnings</h3>
+            <div class="row">
+              <div class="label">Per Marketer – Daily</div>
+              <div class="value" id="mkPerDay">Ksh.0.00</div>
+            </div>
+            <div class="row">
+              <div class="label">Per Marketer – Monthly (30 days)</div>
+              <div class="value" id="mkPerMonth">Ksh.0.00</div>
+            </div>
+            <div class="row">
+              <div class="label">All Marketers – Daily</div>
+              <div class="value" id="mkAllDay">Ksh.0.00</div>
+            </div>
+            <div class="row">
+              <div class="label">All Marketers – Monthly (30 days)</div>
+              <div class="value" id="mkAllMonth">Ksh.0.00</div>
+            </div>
+            <div class="row">
+              <div class="label">All Marketers – Yearly (365 days)</div>
+              <div class="value" id="mkAllYear">Ksh.0.00</div>
+            </div>
+          </div>
+
+          <div class="group">
+            <h3>Investor’s Earnings</h3>
+            <div class="row">
+              <div class="label">Daily</div>
+              <div class="value" id="invDay">Ksh.0.00</div>
+            </div>
+            <div class="row">
+              <div class="label">Monthly (30 days)</div>
+              <div class="value" id="invMonth">Ksh.0.00</div>
+            </div>
+            <div class="row">
+              <div class="label">Yearly (365 days)</div>
+              <div class="value" id="invYear">Ksh.0.00</div>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            Notes: Marketers receive <strong>20%</strong> of gross profit. Investor receives <strong>20%</strong> of the profit balance after marketers are paid (i.e., 16% of gross profit).
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Formatting helper: "Ksh.12,345.00"
+    function fmtKsh(n){
+      const fixed = (isFinite(n) ? n : 0).toFixed(2);
+      const parts = fixed.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return "Ksh." + parts.join(".");
+    }
+
+    // Core calculation
+    function recalc(){
+      const marketers        = Math.max(0, parseFloat(document.getElementById("marketers").value) || 0);
+      const usersPerMarketer = Math.max(0, parseFloat(document.getElementById("usersPerMarketer").value) || 0);
+      const dailySpend       = Math.max(0, parseFloat(document.getElementById("dailySpend").value) || 0);
+
+      const totalUsersPerDay = marketers * usersPerMarketer;
+      const dailyRevenue     = totalUsersPerDay * dailySpend;
+
+      // Profit margin 50% (sell 0.80 vs buy 0.40)
+      const dailyProfit      = dailyRevenue * 0.50;
+
+      // Marketers: 20% of gross profit
+      const marketersDailyTotal = dailyProfit * 0.20;
+
+      // Per marketer share (assuming equal distribution)
+      const marketersPerDay = marketers > 0 ? (marketersDailyTotal / marketers) : 0;
+
+      // Investor: 20% of remaining profit after marketers are paid
+      const investorDaily = (dailyProfit - marketersDailyTotal) * 0.20;
+
+      // Scale
+      const mkPerMonth  = marketersPerDay * 30;
+      const mkAllMonth  = marketersDailyTotal * 30;
+      const mkAllYear   = marketersDailyTotal * 365;
+      const invMonth    = investorDaily * 30;
+      const invYear     = investorDaily * 365;
+
+      // Render
+      document.getElementById("mkPerDay").textContent   = fmtKsh(marketersPerDay);
+      document.getElementById("mkPerMonth").textContent = fmtKsh(mkPerMonth);
+      document.getElementById("mkAllDay").textContent   = fmtKsh(marketersDailyTotal);
+      document.getElementById("mkAllMonth").textContent = fmtKsh(mkAllMonth);
+      document.getElementById("mkAllYear").textContent  = fmtKsh(mkAllYear);
+
+      document.getElementById("invDay").textContent     = fmtKsh(investorDaily);
+      document.getElementById("invMonth").textContent   = fmtKsh(invMonth);
+      document.getElementById("invYear").textContent    = fmtKsh(invYear);
+    }
+
+    // Live updates on input
+    ["marketers", "usersPerMarketer", "dailySpend"].forEach(id=>{
+      document.getElementById(id).addEventListener("input", recalc);
+      document.getElementById(id).addEventListener("change", recalc);
+    });
+
+    // Initial calc
+    recalc();
+  </script>
+</body>
+</html>
